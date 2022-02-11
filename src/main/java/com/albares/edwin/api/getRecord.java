@@ -3,14 +3,15 @@ package com.albares.edwin.api;
 
 import com.albares.edwin.db.Db;
 import com.albares.edwin.domain.Record;
-import com.albares.edwin.utils.Response;
-import com.albares.edwin.utils.ResponseCode;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.OPTIONS;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  *
@@ -22,22 +23,38 @@ public class getRecord {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getRecord() {
+    public List getRecord() throws SQLException {
 
         Record rcd = new Record();
-        Response r = new Response();
 
-        try {
-            Db myDb = new Db();
-            myDb.connect();
-            r.setRecords(rcd.getRecordDB(myDb));
-            myDb.disconnect();
-
-            r.setResponseCode(ResponseCode.OK);
-        } catch (SQLException e) {
-            r.setResponseCode(ResponseCode.ERROR);
-        }
-        return r;
-
+        Db myDb = new Db();
+        myDb.connect();
+        List<Record> records = rcd.getRecordDB(myDb);
+        myDb.disconnect();
+        return records;
     }
+
+    @OPTIONS
+    public Response doOptions() {
+        Response r = Response.ok()
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "OPTIONS,POST")
+                .header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+                .build();
+        return r;
+    }
+    
+    /*
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("")
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
+                .header("Access-Control-Allow-Credentials", "true")
+                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD")
+                .header("Access-Control-Max-Age", "1209600")
+                .build();
+    }
+    */
 }
