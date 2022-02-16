@@ -4,13 +4,8 @@ package com.albares.edwin.api;
 import com.albares.edwin.db.Db;
 import com.albares.edwin.domain.Record;
 import static com.albares.edwin.domain.Record.getRecordDB;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.OPTIONS;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.*;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -21,6 +16,11 @@ import java.util.List;
 @Path("/getRecord")
 public class getRecord {
 
+    Response.ResponseBuilder r = Response.ok()
+            .header("Access-Control-Allow-Origin", "*")
+            .header("Access-Control-Allow-Methods", "OPTIONS,POST")
+            .header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRecord() throws SQLException {
@@ -28,25 +28,18 @@ public class getRecord {
         myDb.connect();
         List<Record> records = getRecordDB(myDb);
         myDb.disconnect();
-        Response r = Response.ok(records)
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Methods", "OPTIONS,POST")
-                .header("Access-Control-Allow-Headers", "Content-Type, Authorization")
-                .build();
-        return r;
+        r.entity(records);
+        return r.build();
     }
 
     @OPTIONS
     public Response doOptions() {
-        Response r = Response.ok()
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Methods", "OPTIONS,POST")
-                .header("Access-Control-Allow-Headers", "Content-Type, Authorization")
-                .build();
-        return r;
+
+        return r.build();
     }
 
-    /*
+}
+   /*
     @OPTIONS
     @Path("{path : .*}")
     public Response options() {
@@ -59,4 +52,3 @@ public class getRecord {
                 .build();
     }
      */
-}

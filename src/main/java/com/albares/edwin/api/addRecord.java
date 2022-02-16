@@ -3,6 +3,7 @@ package com.albares.edwin.api;
 import com.albares.edwin.db.Db;
 import com.albares.edwin.domain.Record;
 import static com.albares.edwin.domain.Record.getRecordDB;
+import jakarta.persistence.Entity;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.OPTIONS;
 import jakarta.ws.rs.POST;
@@ -21,11 +22,10 @@ import java.util.List;
 @Path("/addRecord")
 public class addRecord {
 
-    /*ResponseBuilder r = Response.ok()
+    ResponseBuilder r = Response.ok()
             .header("Access-Control-Allow-Origin", "*")
             .header("Access-Control-Allow-Methods", "OPTIONS,POST")
-            .header("Access-Control-Allow-Headers", "Content-Type, Authorization");*/
-            
+            .header("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -36,22 +36,14 @@ public class addRecord {
         rcd.addRecordDB(myDb);
         List records = getRecordDB(myDb);
         myDb.disconnect();
-        Response r = Response.ok(records)
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Methods", "OPTIONS,POST")
-                .header("Access-Control-Allow-Headers", "Content-Type, Authorization")
-                .build();
-        return r;
+
+        r.entity(records);
+        return r.build();
 
     }
 
     @OPTIONS
     public Response doOptions() {
-        Response r = Response.ok()
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Methods", "OPTIONS,POST")
-                .header("Access-Control-Allow-Headers", "Content-Type, Authorization")
-                .build();
-        return r;
+        return r.build();
     }
 }
