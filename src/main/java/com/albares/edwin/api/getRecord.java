@@ -3,6 +3,7 @@ package com.albares.edwin.api;
 
 import com.albares.edwin.db.Db;
 import com.albares.edwin.domain.Record;
+import static com.albares.edwin.domain.Record.getRecordDB;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.OPTIONS;
 import jakarta.ws.rs.POST;
@@ -22,16 +23,17 @@ public class getRecord {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public List getRecord() throws SQLException {
-
-        Record rcd = new Record();
-
+    public Response getRecord() throws SQLException {
         Db myDb = new Db();
         myDb.connect();
-        List<Record> records = rcd.getRecordDB(myDb);
+        List<Record> records = getRecordDB(myDb);
         myDb.disconnect();
-        return records;
+        Response r = Response.ok(records)
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "OPTIONS,POST")
+                .header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+                .build();
+        return r;
     }
 
     @OPTIONS
@@ -43,7 +45,7 @@ public class getRecord {
                 .build();
         return r;
     }
-    
+
     /*
     @OPTIONS
     @Path("{path : .*}")
@@ -56,5 +58,5 @@ public class getRecord {
                 .header("Access-Control-Max-Age", "1209600")
                 .build();
     }
-    */
+     */
 }

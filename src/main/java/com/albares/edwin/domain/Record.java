@@ -66,7 +66,7 @@ public class Record {
         }
     }
 
-    public List getRecordDB(Db myDb) throws SQLException {
+    public static List getRecordDB(Db myDb) throws SQLException {
         PreparedStatement ps = myDb.prepareStatement("SELECT id,name,time FROM records ;");
 
         ResultSet rs = myDb.executeQuery(ps);
